@@ -5,7 +5,11 @@ description = ""
 authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.9"
+solana = "^0.17.0"
+erdpy = "^1.2.2"
+web3 = "^5.28.0"
+bitcoinlib = "^0.6.4"
 
 [tool.poetry.dev-dependencies]
 
