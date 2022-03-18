@@ -1,4 +1,3 @@
-from lib2to3.pgen2 import token
 import web3
 from web3.middleware import geth_poa_middleware
 from kaibamultipay.modules import Module
