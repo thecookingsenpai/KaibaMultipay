@@ -19,5 +19,17 @@
         "native": "BNB",
         "endpoint": "https://data-seed-prebsc-1-s1.binance.org:8545/",
         "private_key": "904ebe905db0bb2afadbdd0dae4eedf51d7206152d776a88ac3df1eddc945420"
+    },
+    "SOLANA": {
+      "type": "SOLANA",
+      "native": "SOL",
+      "endpoint": "https://api.devnet.solana.com",
+      "private_key": [
+        254, 168, 85, 75, 116, 38, 249, 207, 53, 59, 222, 4, 89, 12, 198, 151,
+        6, 208, 196, 215, 25, 135, 17, 49, 116, 242, 43, 80, 96, 4, 207, 202,
+        100, 209, 195, 24, 128, 241, 222, 205, 119, 177, 121, 31, 30, 155, 241,
+        99, 152, 8, 229, 190, 155, 98, 142, 96, 28, 112, 177, 230, 112, 214,
+        209, 233
+      ]
     }
 }
