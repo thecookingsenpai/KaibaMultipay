@@ -19,5 +19,11 @@
         "native": "BNB",
         "endpoint": "https://data-seed-prebsc-1-s1.binance.org:8545/",
         "private_key": "904ebe905db0bb2afadbdd0dae4eedf51d7206152d776a88ac3df1eddc945420"
+    },
+    "ELROND": {
+        "type": "ELROND",
+        "endpoint": "https://testnet-gateway.elrond.com",
+        "native": "EGLD",
+        "private_key": "elrondWalletKey.pem"
     }
 }

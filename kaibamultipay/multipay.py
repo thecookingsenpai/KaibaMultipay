@@ -1,6 +1,9 @@
 from kaibamultipay.modules import *
 import kaibamultipay.factory as factory
 
+import logging
+logger = logging.getLogger("kaibamultipay")
+
 class Multiplay:
     _pay: dict[str, Module]
 
@@ -11,6 +14,7 @@ class Multiplay:
         self._pay[chain] = module
 
     def send(self, chain: str, currency: str, address: str, amount: int):
+        logger.info(f"Send {chain} {currency}")
         self._pay[chain].send(currency, address, amount)
 
     @staticmethod
