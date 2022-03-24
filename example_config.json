@@ -1,0 +1,23 @@
+{
+    "ETHEREUM": {
+        "type": "ETHEREUM",
+        "native": "ETH",
+        "endpoint": "https://rinkeby.infura.io/v3/fcfdf5eff1cf4e51b2a960050f828641",
+        "private_key": "904ebe905db0bb2afadbdd0dae4eedf51d7206152d776a88ac3df1eddc945420",
+        "erc20": {
+            "USDT": "0xD92E713d051C37EbB2561803a3b5FBAbc4962431"
+        }
+    },
+    "FANTOM": {
+        "type": "ETHEREUM",
+        "native": "FTM",
+        "endpoint": "https://rpc.testnet.fantom.network/",
+        "private_key": "904ebe905db0bb2afadbdd0dae4eedf51d7206152d776a88ac3df1eddc945420"
+    },
+    "BSC": {
+        "type": "ETHEREUM",
+        "native": "BNB",
+        "endpoint": "https://data-seed-prebsc-1-s1.binance.org:8545/",
+        "private_key": "904ebe905db0bb2afadbdd0dae4eedf51d7206152d776a88ac3df1eddc945420"
+    }
+}
