@@ -24,6 +24,7 @@ class EthereumModule(Module):
         self._last_nonce = self._w3.eth.get_transaction_count(
             web3.Account.from_key(self._key).address, 'latest')
 
+    # amount units are wei or token units depending on currency
     def send(self, currency: str, address: str, amount: int):
         logger.info(f"{self._currency_name} send {currency}")
         if currency == self._currency_name:
@@ -36,6 +37,7 @@ class EthereumModule(Module):
 
             self._send_erc20(contract_address, address, amount)
 
+    # amount is in wei units
     def _send_native(self, address, amount):
         nonce = self._w3.eth.get_transaction_count(
             web3.Account.from_key(self._key).address, 'latest')
@@ -56,6 +58,7 @@ class EthereumModule(Module):
         tx_id = self._w3.eth.send_raw_transaction(signed.rawTransaction)
         logger.debug(f"Ethereum module sent {self._w3.toHex(tx_id)}")
 
+    # amount is in token units
     def _send_erc20(self, contract_addr, address, amount):
         contract = self._w3.eth.contract(contract_addr, abi=EIP20_ABI)
         nonce = self._w3.eth.get_transaction_count(
