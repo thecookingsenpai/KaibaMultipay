@@ -1,7 +1,7 @@
 from kaibamultipay.modules import *
 import kaibamultipay.factory as factory
 
-class Multiplay:
+class Multipay:
     _pay: dict[str, Module]
 
     def __init__(self) -> None:
@@ -15,7 +15,7 @@ class Multiplay:
 
     @staticmethod
     def from_config(config: dict):
-        result = Multiplay()
+        result = Multipay()
 
         for chain_name in config:
             chain_config = config[chain_name]
