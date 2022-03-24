@@ -1,6 +1,7 @@
 import web3
 from web3.middleware import geth_poa_middleware
 from kaibamultipay.modules import Module
+from kaibamultipay.errors import *
 from kaibamultipay.abi import EIP20_ABI
 
 import logging
@@ -28,7 +29,12 @@ class EthereumModule(Module):
         if currency == self._currency_name:
             self._send_native(address, amount)
         else:
-            self._send_erc20(self._erc20[currency], address, amount)
+            try:
+                contract_address = self._erc20[currency]
+            except KeyError as e:
+                raise NoSuchCurrencyError(currency)
+
+            self._send_erc20(contract_address, address, amount)
 
     def _send_native(self, address, amount):
         nonce = self._w3.eth.get_transaction_count(
@@ -47,8 +53,8 @@ class EthereumModule(Module):
         signed = self._w3.eth.account.sign_transaction(transaction, self._key)
 
         self._last_nonce += 1
-        self._w3.eth.send_raw_transaction(signed.rawTransaction)
-        logger.debug("Sent")
+        tx_id = self._w3.eth.send_raw_transaction(signed.rawTransaction)
+        logger.debug(f"Ethereum module sent {self._w3.toHex(tx_id)}")
 
     def _send_erc20(self, contract_addr, address, amount):
         contract = self._w3.eth.contract(contract_addr, abi=EIP20_ABI)
@@ -66,17 +72,24 @@ class EthereumModule(Module):
         signed = self._w3.eth.account.sign_transaction(transaction, self._key)
 
         self._last_nonce += 1
-        self._w3.eth.send_raw_transaction(signed.rawTransaction)
+        tx_id = self._w3.eth.send_raw_transaction(signed.rawTransaction)
 
-        logger.debug("ERC20 Sent")
+        logger.debug(f"ERC20 Sent: {self._w3.toHex(tx_id)}")
 
     def add_erc20(self, name, address):
         self._erc20[name] = address
 
     @staticmethod
     def from_config(config):
-        result = EthereumModule(
-            config["endpoint"], config["native"], config["private_key"])
+        try:
+            endpoint = config["endpoint"]
+            native = config["native"]
+            private_key = config["private_key"]
+        except KeyError as e:
+            raise ConfigParseError(f"{e} is required in Ethereum module config") from e
+
+        result = EthereumModule(endpoint, native, private_key)
+
         if "erc20" in config:
             for token_name, address in config["erc20"].items():
                 result.add_erc20(token_name, address)
