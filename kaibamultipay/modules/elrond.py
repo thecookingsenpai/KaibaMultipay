@@ -1,4 +1,5 @@
 from pathlib import Path
+from kaibamultipay.errors import NoSuchCurrencyError, ConfigParseError
 
 from kaibamultipay.modules import Module
 from erdpy.accounts import Account
@@ -35,7 +36,9 @@ class ElrondModule(Module):
 
     def send(self, currency: str, address: str, amount: int):
         if currency == self._currency_name:
-            self._send_native(address, amount)
+            return self._send_native(address, amount)
+        else:
+            raise NoSuchCurrencyError(currency)
 
     def _send_native(self, address, amount):
         transaction = Transaction()
@@ -51,11 +54,19 @@ class ElrondModule(Module):
         self._account.nonce += 1
 
         tx_hash = transaction.send(self._proxy)
-        logger.info(f"Elrond sent, hash: {str(tx_hash)}")
+        logger.info(f"Elrond sent: {str(tx_hash)}")
+        return tx_hash
 
     @staticmethod
     def from_config(config):
+        try:
+            endpoint = config["endpoint"]
+            native = config.get("native", "SOL")
+            private_key = config["private_key"]
+        except KeyError as e:
+            raise ConfigParseError(f"{e} is required in Solana module config") from e
+
         result = ElrondModule(
-            config["endpoint"], config.get("native", "EGLD"), Path(config["private_key"]))
+            endpoint, native, Path(private_key))
 
         return result
