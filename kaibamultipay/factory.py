@@ -1,7 +1,6 @@
 from enum import Enum
 from kaibamultipay.errors import ConfigParseError
 from kaibamultipay.modules import *
-from kaibamultipay.modules.solana import SolanaModule
 
 class Types(Enum):
     ETHEREUM = {"from_config": EthereumModule.from_config}

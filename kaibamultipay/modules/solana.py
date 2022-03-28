@@ -1,4 +1,5 @@
 from kaibamultipay.modules import Module
+from kaibamultipay.errors import NoSuchCurrencyError, ConfigParseError
 from solana.rpc.api import Client
 from solana.transaction import Transaction
 from solana.system_program import transfer, TransferParams
@@ -23,6 +24,8 @@ class SolanaModule(Module):
         logger.info(f"{self._currency_name} send {currency}")
         if currency == self._currency_name:
             self._send_native(address, amount)
+        else:
+            raise NoSuchCurrencyError(currency)
 
     def _send_native(self, address, amount):
         receiver = PublicKey(address)
@@ -40,7 +43,14 @@ class SolanaModule(Module):
 
     @staticmethod
     def from_config(config):
+        try:
+            endpoint = config["endpoint"]
+            native = config.get("native", "SOL")
+            private_key = config["private_key"]
+        except KeyError as e:
+            raise ConfigParseError(f"{e} is required in Solana module config") from e
+
         result = SolanaModule(
-            config["endpoint"], config.get("native", "SOL"), bytes(config["private_key"]))
+            endpoint, native, bytes(private_key))
 
         return result
