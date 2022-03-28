@@ -21,9 +21,8 @@ class SolanaModule(Module):
         self._currency_name = currency_name
 
     def send(self, currency: str, address: str, amount: int):
-        logger.info(f"{self._currency_name} send {currency}")
         if currency == self._currency_name:
-            self._send_native(address, amount)
+            return self._send_native(address, amount)
         else:
             raise NoSuchCurrencyError(currency)
 
@@ -39,7 +38,8 @@ class SolanaModule(Module):
         transaction.add(instruction)
 
         result = self._client.send_transaction(transaction, self._keypair)
-        logger.info("Solana sent, response: ", result)
+        logger.info(f"Solana sent: {result['result']}")
+        return result["result"]
 
     @staticmethod
     def from_config(config):

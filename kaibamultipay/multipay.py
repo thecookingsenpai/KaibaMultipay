@@ -3,6 +3,9 @@ from kaibamultipay.modules import *
 import kaibamultipay.factory as factory
 from kaibamultipay.errors import *
 
+import logging
+logger = logging.getLogger("kaibamultipay")
+
 class Multipay:
     _pay: dict[str, Module]
 
@@ -13,11 +16,13 @@ class Multipay:
         self._pay[chain] = module
 
     def send(self, chain: str, currency: str, address: str, amount: int):
+        logger.info(f"{chain} send {amount} {currency} to {address}")        
+
         if chain not in self._pay:
             raise NoSuchChainError(chain)
 
         try:
-            self._pay[chain].send(currency, address, amount)
+            return self._pay[chain].send(currency, address, amount)
         except Exception as e:
             raise SendError(chain, currency, address, amount) from e
 
