@@ -37,5 +37,12 @@
         99, 152, 8, 229, 190, 155, 98, 142, 96, 28, 112, 177, 230, 112, 214,
         209, 233
       ]
+    },
+    "CARDANO": {
+        "type": "CARDANO",
+        "native": "ADA",
+        "host": "localhost",
+        "port": 8090,
+        "wallet_id": "Test"
     }
 }
