@@ -7,6 +7,7 @@ class Types(Enum):
     ELROND = {"from_config": ElrondModule.from_config}
     SOLANA = {"from_config": SolanaModule.from_config}
     CARDANO = {"from_config": CardanoModule.from_config}
+    BITCOIN = {"from_config": BitcoinModule.from_config}
 
 def from_config(type, config):
     try:

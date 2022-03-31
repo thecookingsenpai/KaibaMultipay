@@ -61,10 +61,10 @@ class ElrondModule(Module):
     def from_config(config):
         try:
             endpoint = config["endpoint"]
-            native = config.get("native", "SOL")
+            native = config.get("native", "EGLD")
             private_key = config["private_key"]
         except KeyError as e:
-            raise ConfigParseError(f"{e} is required in Solana module config") from e
+            raise ConfigParseError(f"{e} is required in ELROND module config") from e
 
         result = ElrondModule(
             endpoint, native, Path(private_key))

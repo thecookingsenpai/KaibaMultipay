@@ -44,5 +44,15 @@
         "host": "localhost",
         "port": 8090,
         "wallet_id": "Test"
+    },
+    "BITCOIN": {
+        "type": "BITCOIN",
+        "native": "BTC",
+        "wallet": "testnet_bitcoin"
+    },
+    "LITECOIN": {
+        "type": "BITCOIN",
+        "native": "LTC",
+        "wallet": "testnet_litecoin"
     }
 }

@@ -16,3 +16,7 @@ multipay.send("ELROND", "EGLD", "erd139m36k859j8dm4zsaulqz8s6xe64t7z2ynrm6n7dwe8
 multipay.send("SOLANA", "SOL", "5cdXDJuxhjdiR1QF5iWKCmx6ziLw4ZqYNMqwRHGuosQ", 10000000) #0.01 sol
 
 multipay.send("CARDANO", "ADA", "addr_test1qqe6dqhlvyqjpjn89jdny5eqa8ansl8638gqyxjf8g6p65evha6fpdde4jjj6tgx8p423hx9pguw2czy5qe7ed7pac7stqgd5g", 100000) # 1 ADA
+
+multipay.send("BITCOIN", "BTC", "mzVLNUgm9h4Emb6PuAta8whu3pavq4kn5Y", 1000)
+
+multipay.send("LITECOIN", "LTC", "mkQSKL9NZ4GRxUniGycWPfSPWqJ1B3dxkG", 1000)
