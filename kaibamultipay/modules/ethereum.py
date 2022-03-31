@@ -26,16 +26,15 @@ class EthereumModule(Module):
 
     # amount units are wei or token units depending on currency
     def send(self, currency: str, address: str, amount: int):
-        logger.info(f"{self._currency_name} send {currency}")
         if currency == self._currency_name:
-            self._send_native(address, amount)
+            return self._send_native(address, amount)
         else:
             try:
                 contract_address = self._erc20[currency]
             except KeyError as e:
                 raise NoSuchCurrencyError(currency)
 
-            self._send_erc20(contract_address, address, amount)
+            return self._send_erc20(contract_address, address, amount)
 
     # amount is in wei units
     def _send_native(self, address, amount):
@@ -57,6 +56,7 @@ class EthereumModule(Module):
         self._last_nonce += 1
         tx_id = self._w3.eth.send_raw_transaction(signed.rawTransaction)
         logger.debug(f"Ethereum module sent {self._w3.toHex(tx_id)}")
+        return self._w3.toHex(tx_id)
 
     # amount is in token units
     def _send_erc20(self, contract_addr, address, amount):
@@ -69,7 +69,7 @@ class EthereumModule(Module):
             'chainId': self._chain_id,
             'gas': 700000,
             'gasPrice': gas_price,
-            'nonce': nonce,
+            'nonce': self._last_nonce,
         })
 
         signed = self._w3.eth.account.sign_transaction(transaction, self._key)
@@ -78,6 +78,7 @@ class EthereumModule(Module):
         tx_id = self._w3.eth.send_raw_transaction(signed.rawTransaction)
 
         logger.debug(f"ERC20 Sent: {self._w3.toHex(tx_id)}")
+        return self._w3.toHex(tx_id)
 
     def add_erc20(self, name, address):
         self._erc20[name] = address
