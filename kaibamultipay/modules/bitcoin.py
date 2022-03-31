@@ -30,7 +30,7 @@ class BitcoinModule(Module):
             native = config.get("native", "BTC")
             wallet_name = config["wallet"]
         except KeyError as e:
-            raise ConfigParseError(f"{e} is required in Bitcoin module config") from e
+            raise ConfigParseError(f"{e} is required in Bitcoin/Litecoin module config") from e
 
         result = BitcoinModule(wallet_name, native)
         return result
