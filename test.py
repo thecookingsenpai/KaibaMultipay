@@ -14,3 +14,7 @@ multipay.send("BSC", "BNB", "0x74dF2671D4c080289E1826b878De62d8dB9316e0", 100000
 multipay.send("ELROND", "EGLD", "erd139m36k859j8dm4zsaulqz8s6xe64t7z2ynrm6n7dwe8kfsg72e4qxywwsx", 10000000000000000)  # 0.01 EGLD
 
 multipay.send("SOLANA", "SOL", "5cdXDJuxhjdiR1QF5iWKCmx6ziLw4ZqYNMqwRHGuosQ", 10000000) #0.01 sol
+
+multipay.send("BITCOIN", "BTC", "mzVLNUgm9h4Emb6PuAta8whu3pavq4kn5Y", 1000)
+
+multipay.send("LITECOIN", "LTC", "mkQSKL9NZ4GRxUniGycWPfSPWqJ1B3dxkG", 1000)
