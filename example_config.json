@@ -37,5 +37,15 @@
         99, 152, 8, 229, 190, 155, 98, 142, 96, 28, 112, 177, 230, 112, 214,
         209, 233
       ]
+    },
+    "BITCOIN": {
+        "type": "BITCOIN",
+        "native": "BTC",
+        "wallet": "testnet_bitcoin"
+    },
+    "LITECOIN": {
+        "type": "BITCOIN",
+        "native": "LTC",
+        "wallet": "testnet_litecoin"
     }
 }
