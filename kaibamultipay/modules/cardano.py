@@ -8,7 +8,7 @@ from cardano.backends.walletrest import WalletREST
 import logging
 logger = logging.getLogger("kaibamultipay")
 
-confirm_poll_rate=1
+confirm_poll_rate=5
 confirm_timeout=10*60
 
 class CardanoModule(Module):
