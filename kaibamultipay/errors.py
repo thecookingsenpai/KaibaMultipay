@@ -13,3 +13,6 @@ class NoSuchChainError(MultipayError):
 
 class ConfigParseError(MultipayError):
     pass
+
+class TimeoutError(MultipayError):
+    pass
