@@ -6,6 +6,7 @@ from erdpy.accounts import Account
 from erdpy.transactions import Transaction
 from erdpy.proxy import ElrondProxy
 from erdpy.proxy.http_facade import do_get
+from erdpy.errors import ProxyRequestError
 
 
 import logging
@@ -32,13 +33,24 @@ class ElrondModule(Module):
         self.min_gas_limit = data.get("erd_min_gas_limit", 0)
         self.chain_id = data.get("erd_chain_id", "?")
         self.min_tx_version = data.get("erd_min_transaction_version", 0)
-        self._proxy.get_network_config
+
+    def _update_nonce(self):
+        self._account.sync_nonce(self._proxy)
+        logger.debug(f"Elrond updated nonce: {self._account.nonce}")
 
     def send(self, currency: str, address: str, amount: int):
-        if currency == self._currency_name:
-            return self._send_native(address, amount)
-        else:
-            raise NoSuchCurrencyError(currency)
+        try:
+            if currency == self._currency_name:
+                return self._send_native(address, amount)
+            else:
+                raise NoSuchCurrencyError(currency)
+        except ProxyRequestError as e:
+            message = e.args[0]
+            if 'invalid transaction lowerNonceInTx: true' in message:
+                self._update_nonce()
+                return self.send(currency, address, amount)
+            else:
+                raise
 
     def _send_native(self, address, amount):
         transaction = Transaction()
