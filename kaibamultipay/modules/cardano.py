@@ -34,6 +34,7 @@ class CardanoModule(Module):
         tx = self._wallet.transfer(address, cardano.numbers.from_lovelaces(
             amount), passphrase=self._passphrase)
         logger.info(f"Cardano sent: {str(tx.txid)}")
+        # Confirm that transaction is in blockchain, so that new utxos can be used
         self._confirm_native(tx.txid)
         return tx.txid
 
