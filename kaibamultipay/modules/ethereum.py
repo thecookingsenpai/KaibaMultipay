@@ -21,20 +21,33 @@ class EthereumModule(Module):
         self._currency_name = currency_name
         self._erc20 = {}
         self._chain_id = self._w3.eth.chain_id
-        self._last_nonce = self._w3.eth.get_transaction_count(
-            web3.Account.from_key(self._key).address, 'latest')
+        self._update_nonce()
 
     # amount units are wei or token units depending on currency
     def send(self, currency: str, address: str, amount: int):
-        if currency == self._currency_name:
-            return self._send_native(address, amount)
-        else:
-            try:
-                contract_address = self._erc20[currency]
-            except KeyError as e:
-                raise NoSuchCurrencyError(currency)
+        try:
+            if currency == self._currency_name:
+                return self._send_native(address, amount)
+            else:
+                try:
+                    contract_address = self._erc20[currency]
+                except KeyError as e:
+                    raise NoSuchCurrencyError(currency)
 
-            return self._send_erc20(contract_address, address, amount)
+                return self._send_erc20(contract_address, address, amount)
+        except ValueError as e:
+            message = e.args[0]["message"] 
+            if message == 'nonce too low' or message == 'replacement transaction underpriced':
+                self._update_nonce()
+                return self.send(currency, address, amount)
+            else:
+                raise
+            
+
+    def _update_nonce(self):
+        self._last_nonce = self._w3.eth.get_transaction_count(
+            web3.Account.from_key(self._key).address, 'latest')
+        logger.debug(f"Ethereum updated nonce: {self._last_nonce}")
 
     # amount is in wei units
     def _send_native(self, address, amount):

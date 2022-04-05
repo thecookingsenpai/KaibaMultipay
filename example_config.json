@@ -43,7 +43,8 @@
         "native": "ADA",
         "host": "localhost",
         "port": 8090,
-        "wallet_id": "Test"
+        "wallet_id": "720b18e747b9ee17acd5f294668d03cc02c3e6fd",
+        "passphrase": "7878787878"
     },
     "BITCOIN": {
         "type": "BITCOIN",
