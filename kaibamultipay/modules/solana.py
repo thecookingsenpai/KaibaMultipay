@@ -1,3 +1,4 @@
+from __future__ import annotations
 from kaibamultipay.modules import Module
 from kaibamultipay.errors import NoSuchCurrencyError, ConfigParseError
 from solana.rpc.api import Client
@@ -11,16 +12,32 @@ logger = logging.getLogger("kaibamultipay")
 
 
 class SolanaModule(Module):
+    """Elrond module to send currency"""
+
     _client: Client
     _currency_name: str
     _keypair: Keypair
 
-    def __init__(self, endpoint, currency_name, private_key: bytes) -> None:
+    def __init__(self, endpoint: str, currency_name: str, private_key: bytes):
+        """
+        :param endpoint: API endpoint to connect to
+        :param currency_name: A symbol of native currency(SOL)
+        :param private_key: A bytes array
+        """
+
         self._client = Client(endpoint)
         self._keypair = Keypair.from_secret_key(private_key)
         self._currency_name = currency_name
 
-    def send(self, currency: str, address: str, amount: int):
+    def send(self, currency: str, address: str, amount: int) -> str:
+        """Send `amount` of `currency` to an `address`
+        
+        `amount` units for native currency is in lamports
+
+        :return: txid
+        :raises: :py:class:`kaibamultipay.errors.NoSuchCurrencyError` 
+        """
+
         if currency == self._currency_name:
             return self._send_native(address, amount)
         else:
@@ -42,7 +59,22 @@ class SolanaModule(Module):
         return result["result"]
 
     @staticmethod
-    def from_config(config):
+    def from_config(config) -> SolanaModule:
+        """Create a SolanaModule from config
+        
+        Config parameters:
+
+        `native: str` - A `currency_name` as in 
+        :py:meth:`SolanaModule.__init__`
+
+        `endpoint: str` - An API endpoint
+
+        `private_key: str` - A bytes array that represents a private key
+
+        :raises: :py:class:`kaibamultipay.errors.ConfigParseError` 
+        if required parameters is not found
+        """
+
         try:
             endpoint = config["endpoint"]
             native = config.get("native", "SOL")

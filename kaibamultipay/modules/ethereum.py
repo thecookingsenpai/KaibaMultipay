@@ -9,12 +9,23 @@ logger = logging.getLogger("kaibamultipay")
 
 
 class EthereumModule(Module):
+    """Ethereum module to send currency
+
+    Supports ERC20 currencies by adding them using :py:meth:`EthereumModule.add_erc20`
+    """
+
     _w3: web3.Web3
     _erc20: dict
     _currency_name: str
     _key: str
 
-    def __init__(self, endpoint, currency_name, private_key) -> None:
+    def __init__(self, endpoint: str, currency_name: str, private_key: str):
+        """
+        :param endpoint: API endpoint to connect to
+        :param currency_name: A symbol of native currency(ETH, BNB, FTM, etc)
+        :param private_key: A private key to an account
+        """
+
         self._w3 = web3.Web3(web3.HTTPProvider(endpoint))
         self._w3.middleware_onion.inject(geth_poa_middleware, layer=0)
         self._key = private_key
@@ -23,8 +34,16 @@ class EthereumModule(Module):
         self._chain_id = self._w3.eth.chain_id
         self._update_nonce()
 
-    # amount units are wei or token units depending on currency
+     
     def send(self, currency: str, address: str, amount: int):
+        """Send `amount` of `currency` to an `address`
+        
+        `amount` units are wei or token units depending on currency
+
+        :return: txid
+        :raises: :py:class:`kaibamultipay.errors.NoSuchCurrencyError` 
+        """
+
         try:
             if currency == self._currency_name:
                 return self._send_native(address, amount)
@@ -36,7 +55,7 @@ class EthereumModule(Module):
 
                 return self._send_erc20(contract_address, address, amount)
         except ValueError as e:
-            message = e.args[0]["message"] 
+            message = e.args[0].get("message")
             if message == 'nonce too low' or message == 'replacement transaction underpriced':
                 self._update_nonce()
                 return self.send(currency, address, amount)
@@ -93,11 +112,32 @@ class EthereumModule(Module):
         logger.debug(f"ERC20 Sent: {self._w3.toHex(tx_id)}")
         return self._w3.toHex(tx_id)
 
-    def add_erc20(self, name, address):
+    def add_erc20(self, name: str, address: str):
+        """Add an `address` erc20 contract as a `name` currency
+        :raises: :py:class:`ValueError` `address` is invalid
+        """
+
+        if not self._w3.isAddress(address):
+            raise ValueError(f"{address} is not an address")
+
         self._erc20[name] = address
 
     @staticmethod
     def from_config(config):
+        """Create a EthereumModule from config
+        
+        Config parameters:
+
+        `native: str` - A `currency_name` as in 
+        :py:meth:`EthereumModule.__init__`
+
+        `endpoint: str` - An API endpoint
+
+        `private_key: str` - A private key to an account
+
+        :raises: :py:class:`kaibamultipay.errors.ConfigParseError` 
+        if required parameters is not found
+        """
         try:
             endpoint = config["endpoint"]
             native = config["native"]
