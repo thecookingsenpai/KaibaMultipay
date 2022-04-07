@@ -1,3 +1,5 @@
+
+from __future__ import annotations
 from pathlib import Path
 from kaibamultipay.errors import NoSuchCurrencyError, ConfigParseError
 
@@ -14,17 +16,25 @@ logger = logging.getLogger("kaibamultipay")
 
 
 class ElrondModule(Module):
+    """Elrond module to send currency"""
+
     _proxy: ElrondProxy
     _currency_name: str
 
-    def __init__(self, endpoint, currency_name, pem_file: Path) -> None:
+    def __init__(self, endpoint: str, currency_name: str, pem_file: Path):
+        """
+        :param endpoint: API endpoint to connect to
+        :param currency_name: A symbol of native currency(EGLD)
+        :param pem_file: A path to pem file used to control address
+        """
+
         pem_file = Path(pem_file)
         self._proxy = ElrondProxy(endpoint)
         self._account = Account(pem_file=str(pem_file))
         self._account.sync_nonce(self._proxy)
         self._currency_name = currency_name
 
-        # Parse the network config by hand. 
+        # Parse the network config by hand.
         # Currently there is no min_gas_limit field in erdpy sdk
         url = f"{self._proxy.url}/network/config"
         response = do_get(url)
@@ -38,7 +48,13 @@ class ElrondModule(Module):
         self._account.sync_nonce(self._proxy)
         logger.debug(f"Elrond updated nonce: {self._account.nonce}")
 
-    def send(self, currency: str, address: str, amount: int):
+    def send(self, currency: str, address: str, amount: int) -> str:
+        """Send `amount` of `currency` to an `address`
+        
+        :return: txid
+        :raises: :py:class:`kaibamultipay.errors.NoSuchCurrencyError` 
+        """
+
         try:
             if currency == self._currency_name:
                 return self._send_native(address, amount)
@@ -70,13 +86,29 @@ class ElrondModule(Module):
         return tx_hash
 
     @staticmethod
-    def from_config(config):
+    def from_config(config) -> ElrondModule:
+        """Create a ElrondModule from config
+        
+        Config parameters:
+
+        `native: str` - A `currency_name` as in 
+        :py:meth:`ElrondModule.__init__`
+
+        `endpoint: str` - An API endpoint
+
+        `private_key: str` - A path to a .pem file
+
+        :raises: :py:class:`kaibamultipay.errors.ConfigParseError` 
+        if required parameters is not found
+        """
+
         try:
             endpoint = config["endpoint"]
             native = config.get("native", "EGLD")
             private_key = config["private_key"]
         except KeyError as e:
-            raise ConfigParseError(f"{e} is required in ELROND module config") from e
+            raise ConfigParseError(
+                f"{e} is required in ELROND module config") from e
 
         result = ElrondModule(
             endpoint, native, Path(private_key))

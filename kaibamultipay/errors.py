@@ -1,18 +1,24 @@
 
 class MultipayError(Exception):
-    pass
+    '''A base class for other exceptions'''
+
 
 class SendError(MultipayError):
-    pass
+    '''Thrown if an error occurs in multipay send function'''
+
 
 class NoSuchCurrencyError(MultipayError):
-    pass
+    '''Thrown if there is no such currency in module'''
+
 
 class NoSuchChainError(MultipayError):
-    pass 
+    '''Thrown if there is no such chain in multipay'''
+
 
 class ConfigParseError(MultipayError):
-    pass
+    '''Thrown in the case module config is wrong(missing parameters, etc)'''
+
 
 class TimeoutError(MultipayError):
-    pass
+    '''Thrown if timeout occurs while waiting for  
+    transaction confirm(currently only in cardano)'''
