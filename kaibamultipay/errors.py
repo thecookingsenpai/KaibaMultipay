@@ -10,7 +10,6 @@ class NoSuchCurrencyError(MultipayError):
 
 class NoSuchChainError(MultipayError):
     '''Thrown if there is no such chain in multipay'''
-    pass 
 
 class ConfigParseError(MultipayError):
     '''Thrown in the case module config is wrong(missing parameters, etc)'''
