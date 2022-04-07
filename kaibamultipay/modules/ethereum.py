@@ -34,7 +34,6 @@ class EthereumModule(Module):
         self._chain_id = self._w3.eth.chain_id
         self._update_nonce()
 
-     
     def send(self, currency: str, address: str, amount: int):
         """Send `amount` of `currency` to an `address`
         
@@ -61,7 +60,6 @@ class EthereumModule(Module):
                 return self.send(currency, address, amount)
             else:
                 raise
-            
 
     def _update_nonce(self):
         self._last_nonce = self._w3.eth.get_transaction_count(
@@ -143,7 +141,8 @@ class EthereumModule(Module):
             native = config["native"]
             private_key = config["private_key"]
         except KeyError as e:
-            raise ConfigParseError(f"{e} is required in Ethereum module config") from e
+            raise ConfigParseError(
+                f"{e} is required in Ethereum module config") from e
 
         result = EthereumModule(endpoint, native, private_key)
 

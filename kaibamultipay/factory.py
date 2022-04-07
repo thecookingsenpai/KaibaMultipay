@@ -2,6 +2,7 @@ from enum import Enum
 from kaibamultipay.errors import ConfigParseError
 from kaibamultipay.modules import *
 
+
 class Types(Enum):
     '''Enumeration of supported modules.'''
     ETHEREUM = {"from_config": EthereumModule.from_config}
@@ -9,6 +10,7 @@ class Types(Enum):
     SOLANA = {"from_config": SolanaModule.from_config}
     CARDANO = {"from_config": CardanoModule.from_config}
     BITCOIN = {"from_config": BitcoinModule.from_config}
+
 
 def from_config(type: str, config: dict) -> Module:
     """Load a ``type`` module from ``config``
@@ -27,4 +29,3 @@ def from_config(type: str, config: dict) -> Module:
         raise ConfigParseError(f"No such module type: {str(e)}") from e
 
     return module_type.value["from_config"](config)
-

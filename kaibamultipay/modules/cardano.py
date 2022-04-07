@@ -9,8 +9,9 @@ from cardano.backends.walletrest import WalletREST
 import logging
 logger = logging.getLogger("kaibamultipay")
 
-confirm_poll_rate=5
-confirm_timeout=10*60
+confirm_poll_rate = 5
+confirm_timeout = 10*60
+
 
 class CardanoModule(Module):
     """A module for sending currency in cardano network
@@ -31,9 +32,9 @@ class CardanoModule(Module):
         """
 
         self._passphrase = passphrase
-        self._wallet = Wallet(wallet_id, backend=WalletREST(port=port, host=host))
+        self._wallet = Wallet(
+            wallet_id, backend=WalletREST(port=port, host=host))
         self._currency_name = currency_name
-
 
     def send(self, currency: str, address: str, amount: int) -> str:
         """Send `amount` of `currency` to an `address`
@@ -51,7 +52,8 @@ class CardanoModule(Module):
             raise NoSuchCurrencyError(currency)
 
     def _send_native(self, address, amount):
-        logger.debug(f"Cardano wallet sync proggress: {self._wallet.sync_progress()}")
+        logger.debug(
+            f"Cardano wallet sync proggress: {self._wallet.sync_progress()}")
         logger.debug(f"Cardano wallet balance: {self._wallet.balance()}")
 
         tx = self._wallet.transfer(address, cardano.numbers.from_lovelaces(
@@ -68,14 +70,14 @@ class CardanoModule(Module):
             if i*confirm_poll_rate > confirm_timeout:
                 raise TimeoutError()
 
-            unconfirmed = {tx.txid for tx in self._wallet.transactions(unconfirmed=True, confirmed=False)}
+            unconfirmed = {tx.txid for tx in self._wallet.transactions(
+                unconfirmed=True, confirmed=False)}
             if tx_id not in unconfirmed:
                 break
 
             sleep(confirm_poll_rate)
             i += 1
             logger.debug(f"Cardano wait {i*confirm_poll_rate} {tx_id}")
-
 
     @staticmethod
     def from_config(config) -> CardanoModule:
@@ -104,8 +106,10 @@ class CardanoModule(Module):
             passphrase = config.get("passphrase")
             wallet_id = config["wallet_id"]
         except KeyError as e:
-            raise ConfigParseError(f"{e} is required in Cardano module config") from e
+            raise ConfigParseError(
+                f"{e} is required in Cardano module config") from e
 
-        result = CardanoModule(native, wallet_id, host, port, passphrase=passphrase)
+        result = CardanoModule(native, wallet_id, host,
+                               port, passphrase=passphrase)
 
         return result

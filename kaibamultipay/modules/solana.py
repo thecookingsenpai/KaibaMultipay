@@ -80,7 +80,8 @@ class SolanaModule(Module):
             native = config.get("native", "SOL")
             private_key = config["private_key"]
         except KeyError as e:
-            raise ConfigParseError(f"{e} is required in Solana module config") from e
+            raise ConfigParseError(
+                f"{e} is required in Solana module config") from e
 
         result = SolanaModule(
             endpoint, native, bytes(private_key))

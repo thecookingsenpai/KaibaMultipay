@@ -7,6 +7,7 @@ from kaibamultipay.errors import *
 import logging
 logger = logging.getLogger("kaibamultipay")
 
+
 class Multipay:
     """Connects to the wallets or accounts on multiple chains 
     and has a generic interface to send a currency to an address 
@@ -63,11 +64,10 @@ class Multipay:
             try:
                 type = chain_config["type"]
             except KeyError as e:
-                raise ConfigParseError("\"type\" field is required in {chain_name} chain config") from e
+                raise ConfigParseError(
+                    "\"type\" field is required in {chain_name} chain config") from e
 
             chain = factory.from_config(type, chain_config)
             result.register(chain_name, chain)
 
         return result
-
-
